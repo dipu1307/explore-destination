@@ -28,16 +28,23 @@ const BookingCard = ({destination}) => {
             imageUrl,
             departureDate: new Date(departureDate)
         }
-        console.log(bookingData);
-        const res = await fetch(`http://localhost:5000/bookings`,{
+        // console.log(bookingData);
+        const {data:tokenData} = await authClient.token()
+        console.log(tokenData)
+
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/bookings`,
+          {
             method: "POST",
             headers: {
-                'content-type': 'application/json'
+              "content-type": "application/json",
+              authorization: `Bearer ${tokenData?.token}`,
             },
-            body: JSON.stringify(bookingData)
-        });
+            body: JSON.stringify(bookingData),
+          },
+        );
         const data = await res.json();
-        console.log(data);
+        // console.log(data);
         toast.success('You booked succesfully book the destination');
     }
 

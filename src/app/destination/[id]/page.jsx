@@ -1,6 +1,8 @@
 import BookingCard from "@/components/BookingCard";
 import { DeleteAlert } from "@/components/DeleteAlert";
 import { EditModal } from "@/components/EditModal";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 import Image from "next/image";
 
@@ -9,14 +11,28 @@ import { LuMapPin } from "react-icons/lu";
 
 const DestinationDetailsPage =async ({params}) => {
     const {id} = await params;
-    console.log(id);
-    const res = await fetch(`http://localhost:5000/destination/${id}`);
+    // console.log(id);
+
+    const {token} = await auth.api.getToken({
+      headers: await headers()
+    })
+    // console.log(token);
+
+
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/destination/${id}`,
+      {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      },
+    );
     const destination = await res.json();
 
      const { _id, imageUrl, price, duration, destinationName, country } =
        destination;
 
-    console.log(destination);
+    // console.log(destination);
     return (
       <div className="container mx-auto mb-10 mt-4">
         <div className="flex items-center gap-2 justify-end my-3">
